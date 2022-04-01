@@ -24,6 +24,15 @@ export function checkTaxExempt(item) {
   return taxFreeGoods.some((i) => item.includes(i));
 }
 
+export function convertInput(input) {
+  return {
+    amount: 0,
+    import: false,
+    item: "none",
+    price: 0,
+  };
+}
+
 function App() {
   return (
     <div className="App">

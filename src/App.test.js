@@ -1,5 +1,5 @@
 import { expect } from "vitest";
-import { calcTax, checkTaxExempt, roundTax } from "./App";
+import { calcTax, checkTaxExempt, convertInput, roundTax } from "./App";
 
 // --- calculating tax ---
 
@@ -48,4 +48,72 @@ test("check if the item is exempt from tax (books, food, medical)", () => {
   expect(checkTaxExempt("bottle of perfume")).toBe(false);
   // packet of headache pills
   expect(checkTaxExempt("packet of headache pills")).toBe(true);
+});
+
+// --- convert input ---
+
+test("recognize input and convert accordingly", () => {
+  // 1 book at 12.49
+  expect(convertInput("1 book at 12.49")).toEqual({
+    amount: 1,
+    import: false,
+    item: "book",
+    price: 12.49,
+  });
+  // 1 music CD at 14.99
+  expect(convertInput("1 music CD at 14.99")).toEqual({
+    amount: 1,
+    import: false,
+    item: "music CD",
+    price: 14.99,
+  });
+  // 1 chocolate bar at 0.85
+  expect(convertInput("1 chocolate bar at 0.85")).toEqual({
+    amount: 1,
+    import: false,
+    item: "chocolate bar",
+    price: 0.85,
+  });
+  // 1 imported box of chocolates at 10.00
+  expect(convertInput("1 imported box of chocolates at 10.00")).toEqual({
+    amount: 1,
+    import: true,
+    item: "box of chocolates",
+    price: 10.0,
+  });
+  // 1 imported bottle of perfume at 47.50
+  expect(convertInput("1 imported bottle of perfume at 47.50")).toEqual({
+    amount: 1,
+    import: true,
+    item: "bottle of perfume",
+    price: 47.5,
+  });
+  // 1 imported bottle of perfume at 27.99
+  expect(convertInput("1 imported bottle of perfume at 27.99")).toEqual({
+    amount: 1,
+    import: true,
+    item: "bottle of perfume",
+    price: 27.99,
+  });
+  // 1 bottle of perfume at 18.99
+  expect(convertInput("1 bottle of perfume at 18.99")).toEqual({
+    amount: 1,
+    import: false,
+    item: "bottle of perfume",
+    price: 18.99,
+  });
+  // 1 packet of headache pills at 9.75
+  expect(convertInput("1 packet of headache pills at 9.75")).toEqual({
+    amount: 1,
+    import: false,
+    item: "packet of headache pills",
+    price: 9.75,
+  });
+  // 1 box of imported chocolates at 11.25
+  expect(convertInput("1 box of imported chocolates at 11.25")).toEqual({
+    amount: 1,
+    import: true,
+    item: "box of chocolates",
+    price: 11.25,
+  });
 });
