@@ -21,7 +21,7 @@ export function roundTax(tax) {
 }
 
 export function checkTaxExempt(item) {
-  return false;
+  return taxFreeGoods.some((i) => item.includes(i));
 }
 
 function App() {
