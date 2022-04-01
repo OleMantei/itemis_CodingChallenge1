@@ -1,5 +1,6 @@
 const taxRate = 10;
 const taxRateImported = 5;
+const taxFreeGoods = ["book", "chocolate", "pill"];
 
 export function calcTax(price, exempt, imported) {
   const tax = exempt
@@ -17,6 +18,10 @@ export function roundTax(tax) {
   const lastDigit = Math.trunc(tax * 100) % 10;
 
   return lastDigit < 5 && lastDigit != 0 ? rounded - 0.05 : rounded;
+}
+
+export function checkTaxExempt(item) {
+  return false;
 }
 
 function App() {
