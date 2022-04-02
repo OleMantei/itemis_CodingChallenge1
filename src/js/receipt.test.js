@@ -1,11 +1,10 @@
-import { expect } from "vitest";
 import {
   calcTax,
   checkTaxExempt,
   convertInput,
   createReceipt,
   roundTax,
-} from "./App";
+} from "./receipt";
 
 // --- calculating tax ---
 
