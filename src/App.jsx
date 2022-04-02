@@ -58,17 +58,41 @@ export function convertInput(input) {
 }
 
 export function createReceipt(inputs) {
+  let items = [];
+  let salesTaxes = 0;
+  let total = 0;
+
+  inputs.forEach((i) => {
+    const conInput = convertInput(i);
+    let item = {
+      amount: conInput.amount,
+      import: conInput.import,
+      item: conInput.item,
+    };
+
+    item.shelfPrice =
+      Math.round(
+        (conInput.price +
+          roundTax(
+            calcTax(
+              conInput.price,
+              checkTaxExempt(conInput.item),
+              conInput.import
+            )
+          )) *
+          100
+      ) / 100;
+
+    total += item.shelfPrice;
+    salesTaxes += item.shelfPrice - conInput.price;
+
+    items.push(item);
+  });
+
   return {
-    items: [
-      {
-        amount: 0,
-        import: false,
-        item: "none",
-        shelfPrice: 0,
-      },
-    ],
-    salesTaxes: 0,
-    total: 0,
+    items: items,
+    salesTaxes: Math.round(salesTaxes * 100) / 100,
+    total: Math.round(total * 100) / 100,
   };
 }
 
