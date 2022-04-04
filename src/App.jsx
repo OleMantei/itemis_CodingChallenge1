@@ -1,25 +1,114 @@
+import {
+  Button,
+  Container,
+  FormControl,
+  IconButton,
+  InputAdornment,
+  OutlinedInput,
+  Paper,
+  Typography,
+} from "@mui/material";
+import Footer from "./components/Footer";
+import NavBar from "./components/NavBar";
+import { MdAddCircle } from "react-icons/md";
 import { createReceipt } from "./js/receipt";
-
-const input1 = [
-  "1 book at 12.49",
-  "1 music CD at 14.99",
-  "1 chocolate bar at 0.85",
-];
-const input2 = [
-  "1 imported box of chocolates at 10.00",
-  "1 imported bottle of perfume at 47.50",
-];
-const input3 = [
-  "1 imported bottle of perfume at 27.99",
-  "1 bottle of perfume at 18.99",
-  "1 packet of headache pills at 9.75",
-  "1 box of imported chocolates at 11.25",
-];
+import { Box } from "@mui/system";
+import { useState } from "react";
+import Receipt from "./components/Receipt";
 
 function App() {
+  const [inputValue, setInputValue] = useState("");
+  const [basketItems, setBasketItems] = useState([]);
+  const [receipt, setReceipt] = useState({});
+
+  function handleSubmitItem() {
+    setBasketItems((basketItems) => [...basketItems, inputValue]);
+    setInputValue("");
+  }
+
+  function handleResetInterface() {
+    setInputValue("");
+    setBasketItems([]);
+    setReceipt({});
+  }
+
+  function handlePrintReceipt() {
+    setReceipt(createReceipt(basketItems));
+  }
+
   return (
     <div className="App">
-      <h1>Hello Challenge</h1>
+      <Box
+        sx={{
+          minHeight: "100vh",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
+        }}
+      >
+        <NavBar
+          title="Sales Taxes"
+          itemsCount={basketItems.length}
+          items={basketItems}
+          handleResetInterface={handleResetInterface}
+        />
+        <Container maxWidth="sm">
+          {Object.keys(receipt).length === 0 ? (
+            <Box my={6} textAlign="center">
+              <Box mb={3}>
+                <Typography variant="h4">Add item to basket</Typography>
+                <Typography variant="subtitle2" color={"lightgray"}>
+                  Please make sure you enter the item like the following: <br />
+                  "1 book at 12.49" or "1 imported box of chocolates at 10.00".
+                </Typography>
+              </Box>
+              <Paper elevation={3}>
+                <FormControl variant="outlined" fullWidth>
+                  <OutlinedInput
+                    onChange={(e) => setInputValue(e.target.value)}
+                    value={inputValue}
+                    onKeyDown={(e) =>
+                      e.key == "Enter" &&
+                      inputValue.length !== 0 &&
+                      handleSubmitItem()
+                    }
+                    placeholder="e.g. 1 book at 12.49"
+                    endAdornment={
+                      <InputAdornment position="end">
+                        <IconButton
+                          onClick={() => handleSubmitItem()}
+                          edge="end"
+                          color="secondary"
+                          disabled={inputValue.length === 0}
+                        >
+                          <MdAddCircle />
+                        </IconButton>
+                      </InputAdornment>
+                    }
+                    title="add item"
+                  />
+                </FormControl>
+              </Paper>
+              <Box mt={3}>
+                <Button
+                  variant="contained"
+                  disableElevation
+                  disabled={basketItems.length === 0}
+                  onClick={() => handlePrintReceipt()}
+                >
+                  print receipt
+                </Button>
+              </Box>
+            </Box>
+          ) : (
+            <Receipt receipt={receipt} />
+          )}
+        </Container>
+        <Footer
+          title="itemis coding challenge"
+          subtitle="solved by Ole Mantei, 2022"
+        />
+      </Box>
     </div>
   );
 }
