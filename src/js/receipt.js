@@ -25,13 +25,25 @@ export function checkTaxExempt(item) {
 }
 
 export function convertInput(input) {
-  const amount = Number(input.charAt(0));
+  let amount = Number(input.substring(0, input.indexOf(" ")));
   const imported = input.includes("import");
-  const item = input
+  let item = input
     .replace(RegExp(/[0-9.]|at\s|imported/g), "")
     .trim()
     .replace(/\s+/g, " ");
-  const price = Number(input.substring(input.indexOf("at ") + 2).trim());
+  let price = Number(input.substring(input.indexOf("at ") + 2).trim());
+
+  if (isNaN(amount)) {
+    amount = 1;
+  }
+
+  if (!item) {
+    item = "unknown";
+  }
+
+  if (isNaN(price)) {
+    price = 0;
+  }
 
   return {
     amount: amount,
